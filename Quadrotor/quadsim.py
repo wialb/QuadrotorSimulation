@@ -7,7 +7,7 @@ from .quadrotor import Quadrotor
 class QuadSim:
     def __init__(self,controller,des_state,Tmax,
                  pos = None, attitude = [0,0,0],
-                 animation_frequency = 50,
+                 animation_frequency = 24,
                  control_frequency = 200):
 
         self.t = 0
@@ -20,6 +20,7 @@ class QuadSim:
         self.controller = controller
         if pos is None: pos = des_state(0).pos
         self.Quadrotor = Quadrotor(pos, attitude)
+        self.states = []
 
         self.pos_history = deque(maxlen=100)
 
@@ -44,6 +45,8 @@ class QuadSim:
             frame = self.control_loop()
             self.update_plot(frame)
             plt.pause(self.animation_rate)
+
+        self.states = np.array(self.states)
 
     def init_plot(self,ax = None):
         if ax is None:
@@ -71,3 +74,13 @@ class QuadSim:
         history = np.array(self.pos_history)
         self.lines[-1].set_data(history[:,0], history[:,1])
         self.lines[-1].set_3d_properties(history[:,-1])
+
+        t = len(self.states)*self.animation_rate
+        state = self.Quadrotor.get_state()
+        roll_deg = np.degrees(state.rot[0])
+        pitch_deg = np.degrees(state.rot[1])
+        yaw_deg = np.degrees(state.rot[2])
+        x = state.pos[0]
+        y = state.pos[1]
+        z = state.pos[2]
+        self.states.append(np.array([t, roll_deg, pitch_deg, yaw_deg, x, y, z]))

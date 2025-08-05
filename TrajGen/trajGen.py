@@ -99,6 +99,8 @@ class trajGenerator:
         #set yaw in the direction of velocity
         yaw, yawdot = self.get_yaw(vel[:2])
 
+        yaw -= np.pi / 2  # Align yaw=0 with positive Y axis for HELIOS++
+
         return DesiredState(pos, vel, accl, jerk, yaw, yawdot)
 
     def get_yaw(self,vel):

@@ -1,7 +1,7 @@
 import numpy as np
 from math import sin, cos
-from Quadrotor import params
-from Quadrotor.utils import RPYToRot,vee
+from .Quadrotor import params
+from .Quadrotor.utils import RPYToRot,vee
 
 kv = np.array([10,10,10]);
 kp = np.array([30,30,30]);
