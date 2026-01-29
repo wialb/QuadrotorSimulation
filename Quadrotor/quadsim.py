@@ -4,25 +4,32 @@ import mpl_toolkits.mplot3d.axes3d as Axes3D
 from collections import deque
 from .quadrotor import Quadrotor
 
+
 class QuadSim:
-    def __init__(self,controller,des_state,Tmax,
-                 pos = None, attitude = [0,0,0],
-                 animation_frequency = 24,
-                 control_frequency = 200):
+    def __init__(self,
+                 controller,
+                 traj,
+                 pos = None,
+                 attitude = [0,0,0],
+                 fps = 24,
+                 control_frequency = 200
+                 ):
 
         self.t = 0
-        self.Tmax = Tmax
+        self.Tmax = traj.TS[-1]
         self.dt = 1/control_frequency
-        self.animation_rate = 1/animation_frequency
-        self.control_iterations = int(control_frequency / animation_frequency)
+        self.animation_rate = 1/fps
+        self.control_iterations = int(control_frequency/fps)
 
-        self.des_state = des_state
+        self.des_state = traj.get_des_state
         self.controller = controller
-        if pos is None: pos = des_state(0).pos
+        if pos is None: pos = self.des_state(0).pos
         self.Quadrotor = Quadrotor(pos, attitude)
         self.states = []
 
         self.pos_history = deque(maxlen=100)
+
+        self.run()
 
     def Step(self):
         des_state = self.des_state(self.t)

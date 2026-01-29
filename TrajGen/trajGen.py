@@ -4,12 +4,12 @@ from scipy import optimize
 from .trajutils import *
 
 class trajGenerator:
-    def __init__(self,waypoints,max_vel = 5,gamma = 100):
-        self.waypoints = waypoints
-        self.max_vel = max_vel
-        self.gamma = gamma
+    def __init__(self, config):
+        self.waypoints = np.array(config["trajectory"]["waypoints"])
+        self.max_vel = config["trajectory"]["max_vel"]
+        self.gamma = config["trajectory"]["gamma"]
         self.order = 10
-        len,dim = waypoints.shape
+        len,dim = self.waypoints.shape
         self.dim = dim
         self.len = len
         self.TS = np.zeros(self.len)
